@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://land.booky-la.cloud';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://admins.kd-realestate.la';
 
 const api = axios.create({
   baseURL: API_URL,
   timeout: 10000,
+  withCredentials: true,
 });
 
 // Types
@@ -112,9 +113,9 @@ export const publicApi = {
     return response.data;
   },
 
-  // Look up customer's own bookings by phone
-  getMyBookings: async (phone: string) => {
-    const response = await api.get<PublicBooking[]>('/public/my-bookings', { params: { phone } });
+  // Look up customer's own bookings (cookie-based auth via otpSession)
+  getMyBookings: async () => {
+    const response = await api.get<PublicBooking[]>('/public/my-bookings');
     return response.data;
   },
 };

@@ -1,17 +1,17 @@
 'use client';
 
 import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Clock, FileText, MapPin } from 'lucide-react';
 import { publicApi, type PublicBooking } from '@/lib/api-client';
 import { formatPrice } from '@/lib/utils';
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
-  pending:   { label: 'ລໍຖ້າ', color: 'bg-yellow-100 text-yellow-700' },
-  confirmed: { label: 'ຢືນຢັນແລ້ວ', color: 'bg-green-100 text-green-700' },
+  active:    { label: 'ລໍຖ້າ', color: 'bg-yellow-100 text-yellow-700' },
+  converted: { label: 'ເຊັນສັນຍາແລ້ວ', color: 'bg-green-100 text-green-700' },
+  expired:   { label: 'ໝົດອາຍຸ', color: 'bg-gray-100 text-gray-600' },
   cancelled: { label: 'ຍົກເລີກ', color: 'bg-red-100 text-red-700' },
-  completed: { label: 'ສຳເລັດ', color: 'bg-blue-100 text-blue-700' },
 };
 
 const METHOD_LABEL: Record<string, string> = {
@@ -30,24 +30,24 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function MyBookingsContent() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const phone = searchParams.get('phone') || '';
 
   const [bookings, setBookings] = useState<PublicBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!phone) {
-      router.replace('/my-account');
-      return;
-    }
-    publicApi.getMyBookings(phone)
+    publicApi.getMyBookings()
       .then(setBookings)
-      .catch(() => setError('ບໍ່ສາມາດດຶງຂໍ້ມູນໄດ້ ກະລຸນາລອງໃໝ່'))
+      .catch((err) => {
+        if (err?.status === 401) {
+          router.replace('/my-account');
+        } else {
+          setError('ບໍ່ສາມາດດຶງຂໍ້ມູນໄດ້ ກະລຸນາລອງໃໝ່');
+        }
+      })
       .finally(() => setLoading(false));
-  }, [phone, router]);
+  }, [router]);
 
   return (
     <div className="container py-10 max-w-lg mx-auto">
@@ -60,7 +60,7 @@ function MyBookingsContent() {
       </Link>
 
       <h1 className="text-xl font-bold text-gray-900 mb-1">ການຈອງຂອງຂ້ອຍ</h1>
-      <p className="text-sm text-gray-400 mb-6">{phone}</p>
+      <p className="text-sm text-gray-400 mb-6">ຂໍ້ມູນຂອງທ່ານ</p>
 
       {loading && (
         <div className="space-y-3">
@@ -139,7 +139,7 @@ function MyBookingsContent() {
               </div>
 
               {/* Pending payment reminder */}
-              {b.status === 'pending' && (
+              {b.status === 'active' && (
                 <Link
                   href={`/booking/${b.id}?num=${encodeURIComponent(b.bookingNumber)}&deposit=${b.depositAmount}&method=${b.depositMethod || ''}&plot=${encodeURIComponent(b.plotNumber || '')}`}
                   className="mt-4 flex items-center justify-center gap-2 bg-blue-600 text-white py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 transition"
