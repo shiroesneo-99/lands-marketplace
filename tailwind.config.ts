@@ -11,6 +11,9 @@ const config: Config = {
         primary: '#2563eb',
         secondary: '#1f2937',
       },
+      fontFamily: {
+        sans: ['var(--font-phetsarath)', 'sans-serif'],
+      },
     },
   },
   plugins: [],

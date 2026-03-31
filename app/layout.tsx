@@ -12,6 +12,7 @@ const phetsarath = Phetsarath({
   subsets: ['lao'],
   display: 'swap',
   adjustFontFallback: false,
+  variable: '--font-phetsarath',
 })
 
 const API_URL = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://admins.kd-realestate.la';
@@ -66,7 +67,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="lo" className={phetsarath.className}>
+    <html lang="lo" className={phetsarath.variable}>
       <body>
         <Header />
         <main className="min-h-screen">
