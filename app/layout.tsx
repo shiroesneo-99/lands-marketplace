@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Phetsarath } from 'next/font/google'
+import localFont from 'next/font/local'
 import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -7,11 +7,12 @@ import WhatsAppButton from '@/components/WhatsAppButton'
 import PWAProvider from '@/components/PWAProvider'
 import CompareBar from '@/components/CompareBar'
 
-const phetsarath = Phetsarath({
-  weight: ['400', '700'],
-  subsets: ['lao'],
+const phetsarath = localFont({
+  src: [
+    { path: '../public/fonts/Phetsarath-Regular.ttf', weight: '400', style: 'normal' },
+    { path: '../public/fonts/Phetsarath-Bold.ttf',    weight: '700', style: 'normal' },
+  ],
   display: 'swap',
-  adjustFontFallback: false,
   variable: '--font-phetsarath',
 })
 
