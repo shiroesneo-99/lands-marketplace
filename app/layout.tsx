@@ -9,6 +9,7 @@ import CompareBar from '@/components/CompareBar'
 
 const phetsarath = localFont({
   src: [
+    { path: '../public/fonts/Phetsarath-OT.ttf',      weight: '400', style: 'normal' },
     { path: '../public/fonts/Phetsarath-Regular.ttf', weight: '400', style: 'normal' },
     { path: '../public/fonts/Phetsarath-Bold.ttf',    weight: '700', style: 'normal' },
   ],
